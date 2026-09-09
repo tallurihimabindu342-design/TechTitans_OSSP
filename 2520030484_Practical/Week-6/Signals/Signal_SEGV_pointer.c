@@ -1,19 +1,18 @@
-#include <stdio.h>
-#include <signal.h>
-#include <stdlib.h>
+#include<stdio.h>
 
-void handler(int sig) {
-    printf("SIGSEGV caught: Invalid memory access!\n");
-    exit(0);
-}
+int main(){
+    int x,*p = NULL;
 
-int main() {
-    signal(SIGSEGV, handler);
+    printf("Enter the number");
+    scanf("%d", &x);
 
-    int *ptr = NULL;
+    p = &x;
 
-    printf("Accessing NULL pointer...\n");
-    *ptr = 100;
+    printf("The entered number is: %d\n", x);
+    printf("address of x is: %u\n", &x);
+    printf("The entered number is: %d \n", *p);
+    printf("value o p: %u\n", p);
+    printf("address of p is: %u\n", &p);
 
     return 0;
 }
