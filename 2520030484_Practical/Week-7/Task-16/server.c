@@ -8,7 +8,31 @@
 #include <string.h>
 
 void handler(int sig) {
-    printf("\nSignal received. Server shutting down.\n");
+    printf("\nServer shutting down...\n");
+    exit(0);
+}
+
+void client_handler(int n) {
+    char in[30], out[30], msg[100];
+
+    sprintf(in, "client%d_to_server", n);
+    sprintf(out, "server_to_client%d", n);
+
+    mkfifo(in, 0666);
+    mkfifo(out, 0666);
+
+    int rfd = open(in, O_RDONLY);
+    int wfd = open(out, O_WRONLY);
+
+    read(rfd, msg, sizeof(msg));
+
+    printf("Client %d: %s\n", n, msg);
+
+    sprintf(msg, "Message received from Server for Client %d", n);
+    write(wfd, msg, strlen(msg) + 1);
+
+    close(rfd);
+    close(wfd);
     exit(0);
 }
 
@@ -16,36 +40,16 @@ int main() {
     signal(SIGINT, handler);
     signal(SIGCHLD, SIG_IGN);
 
-    char client_fifo[30], server_fifo[30];
-    char msg[100];
-
     printf("Server started...\n");
 
-    for (int i = 1; i <= 3; i++) {
-        sprintf(client_fifo, "client%d_to_server", i);
-        sprintf(server_fifo, "server_to_client%d", i);
+    if (fork() == 0)
+        client_handler(1);
 
-        mkfifo(client_fifo, 0666);
-        mkfifo(server_fifo, 0666);
-
-        if (fork() == 0) {
-            int rfd = open(client_fifo, O_RDONLY);
-            int wfd = open(server_fifo, O_WRONLY);
-
-            read(rfd, msg, sizeof(msg));
-            printf("Client %d: %s\n", i, msg);
-
-            sprintf(msg, "Hello Client %d, message received!", i);
-            write(wfd, msg, strlen(msg) + 1);
-
-            close(rfd);
-            close(wfd);
-            exit(0);
-        }
-    }
+    if (fork() == 0)
+        client_handler(2);
 
     while (1)
-        pause();
+        sleep(1);
 
     return 0;
 }
