@@ -1,20 +1,18 @@
-#include <stdio.h>
-#include <signal.h>
-#include <unistd.h>
+#include<stdio.h>
+#include<signal.h>
+#include<stdlib.h>
 
-void handler(int sig) {
-    printf("Signal %d received.\n", sig);
+void handler(int signo){
+    printf("signal received\n");
+    printf("signal no:%d\n", signo);
+    exit(1);
 }
 
-int main() {
+int main(){
     signal(SIGINT, handler);
-    signal(SIGTERM, handler);
-
-    printf("Waiting for signals...\n");
-
-    while (1) {
-        sleep(1);
+    while(1){
+        printf("infinte no of prints\n");
+        break;
     }
-
     return 0;
 }

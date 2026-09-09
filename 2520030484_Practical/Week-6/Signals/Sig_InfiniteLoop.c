@@ -1,4 +1,4 @@
-#include <stdio.h>
+nano "2520030484_Practical/Week-6/Signals/Sig_No.c"#include <stdio.h>
 #include <signal.h>
 #include <unistd.h>
 
