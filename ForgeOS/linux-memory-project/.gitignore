@@ -1,0 +1,6 @@
+allocator
+memory_system
+*.o
+memory_status.json
+*_backup*
+*.zip
